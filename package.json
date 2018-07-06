@@ -1,0 +1,23 @@
+{
+  "name": "instagrampuppeteer",
+  "version": "0.0.1",
+  "description": "Instagram Puppeteer Automation Tool",
+  "main": "index.js",
+  "dependencies": {
+    "puppeteer": "^1.5.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dayafterdaynightafternight/instagrampuppeteer.git"
+  },
+  "author": "Cihan Koseoglu <cihan@cihankoseoglu.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dayafterdaynightafternight/instagrampuppeteer/issues"
+  },
+  "homepage": "https://github.com/dayafterdaynightafternight/instagrampuppeteer#readme"
+}
