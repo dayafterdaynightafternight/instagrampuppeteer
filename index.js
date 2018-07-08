@@ -1,5 +1,6 @@
+/* eslint-env browser */
 const puppeteer = require('puppeteer');
-const credentials = require('./credentials');
+const credentials = require('./_credentials');
 
 let sessionCookies;
 
@@ -12,8 +13,8 @@ async function autoFollow() {
     });
     const page = await browser.newPage();
     page.setViewport({
-        height:1080,
-        width:1920
+        height: 1080,
+        width: 1920
     });
 
     if (sessionCookies) {
@@ -29,7 +30,7 @@ async function autoFollow() {
 
         // better button targeting
         const linkHandler = await page.$x('//button[contains(text(), "Log in")]');
-        await linkHandler[0].click()
+        await linkHandler[0].click();
 
         await page.evaluate(() => {
             document.querySelector('._5f5mN').click();
@@ -41,7 +42,7 @@ async function autoFollow() {
     // close the modal popup about installing instagram on mobile
     await page.evaluate(() => {
         if (document.querySelector('[role=dialog] button')) {
-            document.querySelector('[role=dialog] button').click()
+            document.querySelector('[role=dialog] button').click();
         }
     });
 
@@ -51,21 +52,21 @@ async function autoFollow() {
     sessionCookies = await page.cookies();
 
     await page.waitFor(() => document
-    .querySelector('[href="/accounts/activity/"]')
-    .parentNode
-    .querySelector('[role=dialog]')
-    .parentNode
-    .querySelectorAll('[role=button]').length);
-
-    await page.evaluate(() => {
-        const targetedNodes = document
         .querySelector('[href="/accounts/activity/"]')
         .parentNode
         .querySelector('[role=dialog]')
         .parentNode
-        .querySelectorAll('[role=button]')
+        .querySelectorAll('[role=button]').length);
 
-        targetedNodes.forEach((el, index) => {
+    await page.evaluate(() => {
+        const targetedNodes = document
+            .querySelector('[href="/accounts/activity/"]')
+            .parentNode
+            .querySelector('[role=dialog]')
+            .parentNode
+            .querySelectorAll('[role=button]');
+
+        targetedNodes.forEach((el) => {
             const button = el.querySelector('button');
             if (!button) {
                 return;
@@ -74,8 +75,8 @@ async function autoFollow() {
             if (btnText && btnText === 'Follow') {
                 button.click();
             }
-        })
-    })
+        });
+    });
 
     await page.waitFor(1400000);
     await browser.close();
