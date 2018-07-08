@@ -1,29 +1,84 @@
 const puppeteer = require('puppeteer');
 const credentials = require('./credentials');
 
-(async () => {
-  const browser = await puppeteer.launch({
-      headless: false,
-      args: [
-          '--window-size=1920, 1080'
-      ]
-  });
-  const page = await browser.newPage();
-  page.setViewport({
-      height:1080,
-      width:1920
-  });
-  await page.goto('https://instagram.com/accounts/login');
+let sessionCookies;
 
-  await page.waitFor(() => document.querySelectorAll('input').length);
+async function autoFollow() {
+    const browser = await puppeteer.launch({
+        headless: false,
+        args: [
+            '--window-size=1920, 1080'
+        ]
+    });
+    const page = await browser.newPage();
+    page.setViewport({
+        height:1080,
+        width:1920
+    });
 
-  await page.type('[name=username]', credentials.username);
-  await page.type('[name=password]', credentials.password);
+    if (sessionCookies) {
+        await page.setCookie(...sessionCookies);
+        await page.goto('https://instagram.com');
+    } else {
+        await page.goto('https://instagram.com/accounts/login');
 
-  await page.evaluate(() => {
-      document.querySelector('._5f5mN').click();
-  });
+        await page.waitFor(() => document.querySelectorAll('input').length);
 
-  await page.waitFor(14000);
-  await browser.close();
-})();
+        await page.type('[name=username]', credentials.username);
+        await page.type('[name=password]', credentials.password);
+
+        // better button targeting
+        const linkHandler = await page.$x('//button[contains(text(), "Log in")]');
+        await linkHandler[0].click()
+
+        await page.evaluate(() => {
+            document.querySelector('._5f5mN').click();
+        });
+    }
+
+    await page.waitFor(() => document.querySelector('[placeholder=Search]'));
+
+    // close the modal popup about installing instagram on mobile
+    await page.evaluate(() => {
+        if (document.querySelector('[role=dialog] button')) {
+            document.querySelector('[role=dialog] button').click()
+        }
+    });
+
+    await page.evaluate(() => document.querySelector('[href="/accounts/activity/"]').click());
+
+    // set cookies
+    sessionCookies = await page.cookies();
+
+    await page.waitFor(() => document
+    .querySelector('[href="/accounts/activity/"]')
+    .parentNode
+    .querySelector('[role=dialog]')
+    .parentNode
+    .querySelectorAll('[role=button]').length);
+
+    await page.evaluate(() => {
+        const targetedNodes = document
+        .querySelector('[href="/accounts/activity/"]')
+        .parentNode
+        .querySelector('[role=dialog]')
+        .parentNode
+        .querySelectorAll('[role=button]')
+
+        targetedNodes.forEach((el, index) => {
+            const button = el.querySelector('button');
+            if (!button) {
+                return;
+            }
+            const btnText = button.innerText;
+            if (btnText && btnText === 'Follow') {
+                button.click();
+            }
+        })
+    })
+
+    await page.waitFor(1400000);
+    await browser.close();
+}
+
+autoFollow();
