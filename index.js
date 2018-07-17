@@ -12,6 +12,7 @@ async function autoFollow() {
         ]
     });
     const page = await browser.newPage();
+    page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36');
     page.setViewport({
         height: 1080,
         width: 1920

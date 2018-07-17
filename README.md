@@ -23,7 +23,7 @@ For bugfixes
 
 `git branch bugfix/bugfix-name`
 
-When you are done, run `npm lint` to make sure you have no code style errors.
+When you are done, run `npm run lint` to make sure you have no code style errors.
 After you are sure you want to push
 
 `git push origin feature/feature-name`
