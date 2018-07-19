@@ -38,7 +38,9 @@ async function autoFollow() {
         });
     }
 
-    await page.waitFor(() => document.querySelector('[placeholder=Search]'));
+    await page.waitForSelector('input[placeholder=Search]');
+    const searchBox = await page.$$('input[placeholder=Search]');
+    searchBox.click();
 
     // close the modal popup about installing instagram on mobile
     await page.evaluate(() => {
@@ -47,37 +49,36 @@ async function autoFollow() {
         }
     });
 
-    await page.evaluate(() => document.querySelector('[href="/accounts/activity/"]').click());
-
+    // await page.evaluate(() => document.querySelector('[href="/accounts/activity/"]').click());
     // set cookies
     sessionCookies = await page.cookies();
 
-    await page.waitFor(() => document
-        .querySelector('[href="/accounts/activity/"]')
-        .parentNode
-        .querySelector('[role=dialog]')
-        .parentNode
-        .querySelectorAll('[role=button]').length);
+    // await page.waitFor(() => document
+    //     .querySelector('[href="/accounts/activity/"]')
+    //     .parentNode
+    //     .querySelector('[role=dialog]')
+    //     .parentNode
+    //     .querySelectorAll('[role=button]').length);
 
-    await page.evaluate(() => {
-        const targetedNodes = document
-            .querySelector('[href="/accounts/activity/"]')
-            .parentNode
-            .querySelector('[role=dialog]')
-            .parentNode
-            .querySelectorAll('[role=button]');
+    // await page.evaluate(() => {
+    //     const targetedNodes = document
+    //         .querySelector('[href="/accounts/activity/"]')
+    //         .parentNode
+    //         .querySelector('[role=dialog]')
+    //         .parentNode
+    //         .querySelectorAll('[role=button]');
 
-        targetedNodes.forEach((el) => {
-            const button = el.querySelector('button');
-            if (!button) {
-                return;
-            }
-            const btnText = button.innerText;
-            if (btnText && btnText === 'Follow') {
-                button.click();
-            }
-        });
-    });
+    //     targetedNodes.forEach((el) => {
+    //         const button = el.querySelector('button');
+    //         if (!button) {
+    //             return;
+    //         }
+    //         const btnText = button.innerText;
+    //         if (btnText && btnText === 'Follow') {
+    //             button.click();
+    //         }
+    //     });
+    // });
 
     await page.waitFor(1400000);
     await browser.close();
