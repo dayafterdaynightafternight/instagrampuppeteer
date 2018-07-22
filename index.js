@@ -1,8 +1,12 @@
 /* eslint-env browser */
 const puppeteer = require('puppeteer');
-const credentials = require('./_credentials');
 
 let sessionCookies;
+
+const credentials = {
+    username: '##',
+    password: '##'
+};
 
 async function autoFollow() {
     const browser = await puppeteer.launch({
@@ -11,6 +15,7 @@ async function autoFollow() {
             '--window-size=1920, 1080'
         ]
     });
+
     const page = await browser.newPage();
     page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36');
     page.setViewport({
@@ -39,8 +44,30 @@ async function autoFollow() {
     }
 
     await page.waitForSelector('input[placeholder=Search]');
-    const searchBox = await page.$$('input[placeholder=Search]');
-    searchBox.click();
+    // const searchBox = await page.$('input[placeholder=Search]');
+    await page.evaluate(() => {
+        if (document.querySelector('input[placeholder=Search]')) {
+            const searchBox = document
+                .querySelector('input[placeholder=Search]')
+                .parentNode
+                .querySelector('[role=button]');
+
+            searchBox.click();
+        }
+    });
+
+    // const searchTerm = 'guitar';
+
+    await page.keyboard.type('#guitar');
+    await page.waitForSelector('[href="/explore/tags/guitar/"]');
+
+    await page.evaluate(() => {
+        if (document.querySelectorAll('[href="/explore/tags/guitar/"]')) {
+            const firstEl = document.querySelectorAll('[href="/explore/tags/guitar/"]')[0];
+            firstEl.click();
+        }
+    });
+
 
     // close the modal popup about installing instagram on mobile
     await page.evaluate(() => {
