@@ -8,9 +8,7 @@ const credentials = {
     password: '###'
 };
 
-const searchTerm = 'guitar';
-
-async function autoFollow() {
+async function likeByHashtag(hashtag) {
     const browser = await puppeteer.launch({
         headless: false,
         args: [
@@ -52,7 +50,7 @@ async function autoFollow() {
         }
     });
 
-    await page.goto(`http://www.instagram.com/explore/tags/${searchTerm}`);
+    await page.goto(`http://www.instagram.com/explore/tags/${hashtag}`);
 
     // set cookies
     sessionCookies = await page.cookies();
@@ -60,4 +58,4 @@ async function autoFollow() {
     await browser.close();
 }
 
-autoFollow();
+likeByHashtag();
