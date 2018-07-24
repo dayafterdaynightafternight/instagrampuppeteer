@@ -12,15 +12,15 @@ async function likeByHashtag(hashtag) {
     const browser = await puppeteer.launch({
         headless: false,
         args: [
-            '--window-size=1920, 1080'
+            '--window-size=1440, 900'
         ]
     });
 
     const page = await browser.newPage();
     page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36');
     page.setViewport({
-        height: 1080,
-        width: 1920
+        height: 900,
+        width: 1440
     });
 
     if (sessionCookies) {
@@ -34,7 +34,6 @@ async function likeByHashtag(hashtag) {
         await page.type('[name=username]', credentials.username);
         await page.type('[name=password]', credentials.password);
 
-        // better button targeting
         const linkHandler = await page.$x('//button[contains(text(), "Log in")]');
         await linkHandler[0].click();
 
@@ -51,6 +50,14 @@ async function likeByHashtag(hashtag) {
     });
 
     await page.goto(`http://www.instagram.com/explore/tags/${hashtag}`);
+    await page.waitForSelector('._bz0w > a');
+
+    await page.evaluate(() => {
+        const posts = document.querySelectorAll('._bz0w > a');
+        for (let index = 0; index < posts.length; index += 1) {
+            posts[index].click();
+        }
+    });
 
     // set cookies
     sessionCookies = await page.cookies();
@@ -58,4 +65,4 @@ async function likeByHashtag(hashtag) {
     await browser.close();
 }
 
-likeByHashtag();
+likeByHashtag('guitar');
