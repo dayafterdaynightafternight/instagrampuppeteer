@@ -4,9 +4,11 @@ const puppeteer = require('puppeteer');
 let sessionCookies;
 
 const credentials = {
-    username: '##',
-    password: '##'
+    username: '###',
+    password: '###'
 };
+
+const searchTerm = 'guitar';
 
 async function autoFollow() {
     const browser = await puppeteer.launch({
@@ -43,32 +45,6 @@ async function autoFollow() {
         });
     }
 
-    await page.waitForSelector('input[placeholder=Search]');
-    // const searchBox = await page.$('input[placeholder=Search]');
-    await page.evaluate(() => {
-        if (document.querySelector('input[placeholder=Search]')) {
-            const searchBox = document
-                .querySelector('input[placeholder=Search]')
-                .parentNode
-                .querySelector('[role=button]');
-
-            searchBox.click();
-        }
-    });
-
-    // const searchTerm = 'guitar';
-
-    await page.keyboard.type('#guitar');
-    await page.waitForSelector('[href="/explore/tags/guitar/"]');
-
-    await page.evaluate(() => {
-        if (document.querySelectorAll('[href="/explore/tags/guitar/"]')) {
-            const firstEl = document.querySelectorAll('[href="/explore/tags/guitar/"]')[0];
-            firstEl.click();
-        }
-    });
-
-
     // close the modal popup about installing instagram on mobile
     await page.evaluate(() => {
         if (document.querySelector('[role=dialog] button')) {
@@ -76,37 +52,10 @@ async function autoFollow() {
         }
     });
 
-    // await page.evaluate(() => document.querySelector('[href="/accounts/activity/"]').click());
+    await page.goto(`http://www.instagram.com/explore/tags/${searchTerm}`);
+
     // set cookies
     sessionCookies = await page.cookies();
-
-    // await page.waitFor(() => document
-    //     .querySelector('[href="/accounts/activity/"]')
-    //     .parentNode
-    //     .querySelector('[role=dialog]')
-    //     .parentNode
-    //     .querySelectorAll('[role=button]').length);
-
-    // await page.evaluate(() => {
-    //     const targetedNodes = document
-    //         .querySelector('[href="/accounts/activity/"]')
-    //         .parentNode
-    //         .querySelector('[role=dialog]')
-    //         .parentNode
-    //         .querySelectorAll('[role=button]');
-
-    //     targetedNodes.forEach((el) => {
-    //         const button = el.querySelector('button');
-    //         if (!button) {
-    //             return;
-    //         }
-    //         const btnText = button.innerText;
-    //         if (btnText && btnText === 'Follow') {
-    //             button.click();
-    //         }
-    //     });
-    // });
-
     await page.waitFor(1400000);
     await browser.close();
 }
